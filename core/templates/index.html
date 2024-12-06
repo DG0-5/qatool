@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <div class="container">
+        <ul>
+            <h1>Search Your Query</h1>
+            <li>For SQL query to fetch data: give me sql query that can generate *not more than 20* where *customize your query*</li>
+            <li>To request an analysis: give me an analysis of post id *mention post id here*</li>
+            <li>Get insights and reports <a href="{% url 'about' %}">Learn more...</a></li>
+        </ul>
+    </div>
+    
+    <ul class="list-unstyled messages-list">
+        {% if response %}
+        <li class="message received">
+        <div class="d-flex justify-content-center">
+            
+            <div class="result-box" id="code-box">
+                <span class="keyword"><div class="heading">SQL Query:</div>{{ response|safe }}</span>
+            </div>
+        </div> 
+        </li>
+        {% endif %}
+    
+        {% if dict_data %}
+        <li class="message received">
+            <div id="result-box" class="obsidian-box">
+                <table border="2">
+                    <tr>
+                        <th>title</th>
+                        <th>URL</th>
+                        <th>Text</th>
+                        <th>By</th>
+                        <th>Time Stamp</th>
+                        <th>ID</th>
+                    </tr>
+    
+                    {% for row in dict_data %}
+                        <tr>
+                            <td>{{ row.title }}</td>
+                            <td>{{ row.url }}</td>
+                            <td>{{ row.text }}</td>
+                            <td>{{ row.by }}</td>
+                            <td>{{ row.timestamp }}</td>
+                            <td>{{ row.id }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </li>
+        {% endif %}
+    
+        {% if analysis %}
+        <li class="message received">
+            <div id="analysis-box" class="obsidian-box hidden">
+                <div class="analyze-heading">Analysis</div>
+                <div class="code-box">
+                    {{ analysis|safe }}
+                </div>
+            </div>
+        </li>
+        {% endif %}
+    </ul>
+    
+    <section class="bottom-section">
+        <form method="POST" class="message-form">
+            <div class="search-section">
+                {% csrf_token %}
+                <input type="text" id="search-input" placeholder="Ask your SQL query or analysis..." name="message" required>
+                <button type="submit" class="btn btn-secondary ml-2" id="search-btn">Submit</button>
+            </div>
+        </form>
+    </section>
+    
+
+{% endblock %}
